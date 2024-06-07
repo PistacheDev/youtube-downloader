@@ -1,0 +1,1 @@
+Ce dossier va recevoir toutes les vidéos téléchargées avec l'outil, si vous ne spécifiez aucun chemin de destination personnalisé.
