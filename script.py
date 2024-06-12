@@ -6,7 +6,7 @@ def progression(stream, chunk, sizeRemaining):
     videoSize = stream.filesize # Calcul de la taille de la vidéo.
     downloadedSize = videoSize - sizeRemaining # Calcul du nombre d'octets téléchargés.
     percentage = downloadedSize / videoSize * 100 # Mise en place d'un pourcentage avec les valeurs obtenues.
-    print(f'\rProgression du téléchargement : {percentage:.0f}% ({downloadedSize / 1000000:.2f}Mo/{videoSize / 1000000:.1f}Mo).', end = '', flush = True) # Mise à jour du pourcentage.
+    print(f'\rProgression du téléchargement : {percentage:.0f}% ({downloadedSize / 1000000:.2f}Mo/{videoSize / 1000000:.2f}Mo).', end = '', flush = True) # Mise à jour du pourcentage.
 
 while True: # Boucle du programme.
     videoURL = input('Entrez le lien de la vidéo à télécharger : ') # Demande du lien de la vidéo YouTube à télécharger.
