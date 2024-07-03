@@ -5,8 +5,8 @@ Télécharger gratuitement vos vidéos YouTube !
 Ce projet est Open Source est vous pouvez donc le mettre à jour et faire un pullrequest !
 
 ## Requis
-Python (3.10 ou plus)
-ffmpeg (https://www.youtube.com/watch?v=DMEP82yrs5g)
+- Python (3.10 ou plus)
+- ffmpeg (https://www.youtube.com/watch?v=DMEP82yrs5g)
 
 ## Installation
 1) Téléchargez le downloader.
