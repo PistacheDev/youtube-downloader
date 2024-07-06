@@ -1,5 +1,5 @@
 import requests
-import resolutions
+import resolutions # Script
 import subprocess
 import os
 
@@ -18,14 +18,14 @@ def videoDownload(youtubeVideo, videoTitle):
             i = 1
             print('\nPréparation de votre téléchargement.. La vitesse du téléchargement dépend de votre connexion internet.')
     
-    if resolution == '360p':
+    if resolution == '360p': # Résolutions disponibles avec audio.
         videoToDownload = youtubeVideo.streams.filter(resolution=resolution).first()
         youtubeVideo.register_on_progress_callback(pytubeDownloadProgress)
         video = videoToDownload.download()
 
         print('Progression du téléchargement : 0%.', end = '', flush = True)
         print(f'\n\nTéléchargement terminé : {video}')
-    else:
+    else: # Résolutions sans audio (assemblage).
         videoToDownload = youtubeVideo.streams.filter(resolution=resolution, only_video=True).first()
         audioToDownload = youtubeVideo.streams.filter(only_audio=True).first()
         youtubeVideo.register_on_progress_callback(pytubeDownloadProgress)
@@ -34,7 +34,7 @@ def videoDownload(youtubeVideo, videoTitle):
         audioToDownload.download(filename='audioSource.mp3')
 
         print('Assemblage de la piste vidéo et de la piste audio..', end = '\n\n')
-        subprocess.run(f'ffmpeg -i videoSource.mp4 -i audioSource.mp3 -c:v copy -c:a aac output.mp4', shell=True)
+        subprocess.run('ffmpeg -i videoSource.mp4 -i audioSource.mp3 -c:v copy -c:a aac output.mp4', shell=True) # ffmpeg assemble l'audio et la vidéo pour sortir au final une vidéo.
 
         os.rename('output.mp4', f'{videoTitle}.mp4')
         os.remove('videoSource.mp4')
@@ -49,8 +49,8 @@ def pytubeDownloadProgress(stream, chunk, sizeRemaining):
     percentage = downloadedSize / videoSize * 100   
 
     barSize = 20
-    filled = int(barSize * downloadedSize / videoSize)
-    empty = barSize - filled
+    filled = int(barSize * downloadedSize / videoSize) # Calcul du nombre de "#" à placer.
+    empty = barSize - filled # Calcul du nombre de "-" à placer.
     progressBar = '[' + '#' * filled + '-' * empty + ']'
 
     print(f'\rProgression du téléchargement : {percentage:.0f}% {progressBar} ({downloadedSize / 1000000:.2f}Mo/{videoSize / 1000000:.2f}Mo).', end = '', flush = True)
@@ -60,7 +60,7 @@ def thumbnailDownload(videoThumbnail, videoTitle):
     print('Préparation du téléchargement de la miniature..')
     response = requests.get(videoThumbnail)
 
-    if response.status_code == 200:
+    if response.status_code == 200: # Succès de la requête.
         with open(f'{videoTitle}.png', 'wb') as file:
             file.write(response.content)
             print(f'\nTéléchargement terminé : "{videoTitle}.png"')

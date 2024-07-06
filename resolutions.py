@@ -6,6 +6,6 @@ def displayResolutions(youtubeVideo):
             if video.resolution not in availableResolutions:
                 availableResolutions.append(video.resolution)
 
-    showResolutions = ', '.join(availableResolutions)
+    showResolutions = ', '.join(availableResolutions) # Formatage du texte
     print(f'\nRésolutions disponibles : {showResolutions}')
     return availableResolutions
