@@ -1,31 +1,52 @@
-import platform
-import tkinter
 import pytube
-import getInfos # Script
+import sys
+import downloads # Script
 
-userPlatform = platform.system()
-app = tkinter.Tk()
-app.geometry('800x600')
-app.resizable(0, 0)
-app.title('Youtube Downloader - https://github.com/PistacheDev/youtube-downloader')
+while True:
+    videoUrl = input('Lien de la vidéo YouTube : ')
+    youtubeVideo = pytube.YouTube(videoUrl)
+    print('Recherche des informations sur la vidéo..')
 
-if userPlatform == 'Linux':
-    icon = tkinter.PhotoImage('icon.ico')
-    app.iconphoto(False, icon)
-elif userPlatform == 'Windows' :
-    app.iconbitmap('icon.ico')
-else:
-    print(f'"{userPlatform}" n\'est pas pris en charge !\nVous pouvez modifier le repo github (https://github.com/PistacheDev/youtube-downloader) afin de l\'adapter pour vous et les autres utilisateurs.')
-    app.destroy()
+    videoTitle = youtubeVideo.title
+    videoThumbnail = youtubeVideo.thumbnail_url
+    videoAuthor = youtubeVideo.author
+    videoRestriction = 'Non'
+    videoViews = youtubeVideo.views
 
-tkinter.Label(app, text='Lien de la vidéo à télécharger :', font='arial 15 bold').place(x=250, y=5)
-videoUrl = tkinter.StringVar()
-tkinter.Entry(app, width=95, textvariable=videoUrl).place(x=17, y=35)
-tkinter.Button(app, text='Télécharger', font='arial 15 bold', bg='red', padx=2, command=lambda:launchDownloader(videoUrl, app)).place(x=336, y=64)
+    if youtubeVideo.age_restricted == True:
+        videoRestriction = 'Oui'
 
-def launchDownloader(videoUrl, app):
-    fetchVideo = pytube.YouTube(str(videoUrl.get()))
-    getInfos.displayTitle(fetchVideo, app)
-    getInfos.displayResolutions(fetchVideo, app)
+    print('\nInformations sur la vidéo :')
+    print(f'- Titre : "{videoTitle}"')
+    print(f'- Miniature : {videoThumbnail}')
+    print(f'- Auteur : {videoAuthor}')
+    print(f'- Restriction adulte : {videoRestriction}')
+    print(f'- Nombre de vues : {videoViews} vue(s)')
 
-app.mainloop()
+    print('\nQue souhaitez-vous télécharger ?')
+    print('1) La vidéo')
+    print('2) La miniature')
+    print('3) Les deux')
+
+    download = input('\nNuméro de l\'option voulue : ')
+    i = 0
+
+    while i == 0:
+        if download == '1':
+            downloads.videoDownload(youtubeVideo, videoTitle)
+            i = 1
+        elif download == '2':
+            downloads.thumbnailDownload(videoThumbnail, videoTitle)
+            i = 1
+        elif download == '3':
+            downloads.thumbnailDownload(videoThumbnail, videoTitle)
+            downloads.videoDownload(youtubeVideo, videoTitle)
+            i = 1
+        else:
+            print(f'L\'option entrée ("{download}") n\'est pas valide.', end = '\n\n')
+            download = input('Numéro de l\'option voulue : ')
+
+    restart = input('Souhaitez-vous faire un autre téléchargement ? (o/n) ')
+
+    if restart == 'n':
+        sys.exit()
