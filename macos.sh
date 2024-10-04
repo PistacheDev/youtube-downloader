@@ -1,3 +1,3 @@
 #!/bin/bash
 python main.py
-read -p "Pressez [Entrer] pour fermer le programme.."
+read -p 'Press [Enter] to close the program..'
