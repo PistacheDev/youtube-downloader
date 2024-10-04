@@ -37,9 +37,8 @@ def videoDownload(youtubeVideo, system):
 
         if system == 'Windows':
             ffmpeg = 'ffmpeg.exe'
-        elif system == 'Linux':
-            if os.path.exists('/system/build.prop'):
-                ffmpeg = './ffmpeg'
+        elif os.path.exists('/system/build.prop'):
+            ffmpeg = './ffmpeg'
 
         subprocess.run(f'{ffmpeg} -i videoSource.mp4 -i audioSource.mp3 -c:v copy -c:a aac output.mp4', shell = True)
         videoTitle = re.sub(r'[<>:"/\\|?*]', '', youtubeVideo.title) # Removing unvalid characters.
