@@ -13,7 +13,7 @@ def checkInstallation(system):
             print('ffmpeg isn\'t installed!')
             windowsInstallation()
     elif system == 'Linux':
-        if os.path.exists('/system/build.prop'): # Android system.
+        if os.path.exists('/system/build.prop'): # Android devices.
             if os.path.isfile('./ffmpeg'):
                 print('Great! ffmpeg is installed!')
             else:
@@ -21,45 +21,26 @@ def checkInstallation(system):
                 androidInstallation()
         else:
             isInstalled = False
-            fails = 0
             packageManager = None
+            cmdList = {
+                0: ['snap', 'list', 'ffmpeg'],
+                1: ['dpkg', '-s', 'ffmpeg'],
+                2: ['rpm', '-q', 'ffmpeg-free.x86_64'],
+                3: ['pacman', '-Q', 'ffmpeg']
+            }
 
-            try: # Snap.
-                fetchPackage = subprocess.run(['snap', 'list', 'ffmpeg'], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-                if fetchPackage.returncode == 0:
-                    isInstalled = True
-                packageManager = 'snap'
-            except FileNotFoundError:
-                fails += 1
-
-            try: # Dpkg.
-                fetchPackage = subprocess.run(['dpkg', '-s', 'ffmpeg'], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-                if fetchPackage.returncode == 0:
-                    isInstalled = True
-                packageManager = 'dpkg'
-            except FileNotFoundError:
-                fails += 1
-
-            try: # RPM.
-                fetchPackage = subprocess.run(['rpm', '-q', 'ffmpeg'], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-                if fetchPackage.returncode == 0:
-                    isInstalled = True
-                packageManager = 'rpm'
-            except FileNotFoundError:
-                fails += 1
-
-            try: # Pacman.
-                fetchPackage = subprocess.run(['pacman', '-Q', 'ffmpeg'], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-                if fetchPackage.returncode == 0:
-                    isInstalled = True
-                packageManager = 'pacman'
-            except FileNotFoundError:
-                fails += 1
+            for i in range(len(cmdList)):
+                fetchResult = linuxFetchPackage(cmdList[i])
+                if fetchResult != False:
+                    if fetchResult:
+                        isInstalled = True
+                    packageManager = i
+                    break
 
             if isInstalled:
                 os.system('clear')
                 print('Great! ffmpeg is installed!')
-            elif fails >= 4:
+            elif packageManager == None:
                 os.system('clear')
                 print('The program doesn\'t support your package manager!')
                 sys.exit()
@@ -67,7 +48,7 @@ def checkInstallation(system):
                 os.system('clear')
                 print('ffmpeg isn\'t installed!')
                 linuxInstallation(packageManager)
-    elif system == 'Darwin': # MacOS.
+    elif system == 'Darwin': # Alias MacOS.
         try:
             subprocess.check_call(['ffmpeg', '--version'])
             os.system('clear')
@@ -80,6 +61,14 @@ def checkInstallation(system):
         print('The program doesn\'t support your operating system!')
         sys.exit()
 
+def linuxFetchPackage(cmd):
+    try:
+        fetchPackage = subprocess.run(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        if fetchPackage.returncode == 0:
+            return True
+        return ''
+    except:
+        return False
 
 def windowsInstallation():
     allowed = input(f'Do you allow the installation of ffmpeg? (y/n) ')
@@ -101,7 +90,6 @@ def windowsInstallation():
     os.remove('./ffmpeg.zip')
     print('ffmpeg\'s installation completed! Enjoy!', end = '\n\n')
 
-
 def androidInstallation():
     allowed = input(f'Do you allow the installation of ffmpeg? (y/n) ')
 
@@ -122,7 +110,6 @@ def androidInstallation():
     os.remove('./ffmpeg.zip')
     print('ffmpeg\'s installation completed! Enjoy!', end = '\n\n')
 
-
 def ffmpegDownloadProgress(blockNum, blockSize, totalSize):
     downloadedSize = blockNum * blockSize
     percentage = downloadedSize / totalSize * 100   
@@ -131,32 +118,26 @@ def ffmpegDownloadProgress(blockNum, blockSize, totalSize):
     progressBar = '[' + '█' * filled + ' ' * empty + ']'
     print(f'\rDownload\'s progress: {percentage:.0f}% {progressBar} ({downloadedSize / 1000000:.2f}MB/{totalSize / 1000000:.2f}MB).', end = '', flush = True)
 
-
 def linuxInstallation(packageManager):
     allowed = input(f'Do you allow the installation of ffmpeg? (y/n) ')
 
     if allowed.lower() == 'n':
         sys.exit()
 
-    if packageManager == 'dpkg':
-        os.system('sudo apt install ffmpeg')
-    elif packageManager == 'snap':
+    if packageManager == 0:
+        os.system('sudo apt install ffmpeg -y')
+    elif packageManager == 1:
         os.system('sudo snap install ffmpeg')
-    elif packageManager == 'rpm':
-        try: # Distros using DNF.
-            os.system('sudo dnf install ffmpeg --allowerasing')
+    elif packageManager == 2:
+        try:
+            os.system('sudo dnf install ffmpeg-free.x86_64 -y')
         except:
             os.system('clear')
-            try: # Distros using YUM.
-                os.system('sudo yum install ffmpeg')
-            except: # Distros using ZYPPER.
-                os.system('clear')
-                os.system('sudo zypper install ffmpeg')
-    elif packageManager == 'pacman':
+            os.system('sudo yum install ffmpeg-free.x86_64 -y')
+    elif packageManager == 3:
         os.system('sudo pacman -S ffmpeg')
 
     print('ffmpeg\'s installation completed! Enjoy!', end = '\n\n')
-
 
 def macosInstallation():
     allowed = input(f'Do you allow the installation of ffmpeg? (y/n) ')

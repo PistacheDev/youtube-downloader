@@ -48,7 +48,6 @@ def videoDownload(youtubeVideo, system):
 
         print(f'\nDownload finished: "{videoTitle}.mp4"')
 
-
 def audioDownload(youtubeVideo):
     audioToDownload = youtubeVideo.streams.filter(only_audio = True).first()
     youtubeVideo.register_on_progress_callback(pytubeDownloadProgress)
@@ -56,7 +55,6 @@ def audioDownload(youtubeVideo):
     audioTitle = re.sub(r'[<>:"/\\|?*]', '', youtubeVideo.title) # Removing unvalid characters.
     audioToDownload.download(filename = f'{audioTitle}.mp3')
     print(f'\n\nDownload finished: "{audioTitle}.mp3"')
-
 
 def pytubeDownloadProgress(stream, chunk, sizeRemaining):
     videoSize = stream.filesize
@@ -67,8 +65,7 @@ def pytubeDownloadProgress(stream, chunk, sizeRemaining):
     empty = 20 - filled
     progressBar = '[' + '█' * filled + ' ' * empty + ']'
 
-    print(f'\rDownload\'s progress : {percentage:.0f}% {progressBar} ({downloadedSize / 1000000:.2f}MB/{videoSize / 1000000:.2f}MB).', end = '', flush = True)
-
+    print(f'\rDownload\'s progress: {percentage:.0f}% {progressBar} ({downloadedSize / 1000000:.2f}MB/{videoSize / 1000000:.2f}MB).', end = '', flush = True)
 
 def thumbnailDownload(videoThumbnail, videoTitle):
     print('Preparing the download..')
