@@ -1,6 +1,7 @@
 # Youtube Downloader
 Download YouTube videos for free!
 This Python program can run on any operating system.
+My Discord server: https://discord.com/invite/RkB3ZQsmGV.
 
 ## Important
 You can contribute to this project!

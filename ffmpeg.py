@@ -130,12 +130,12 @@ def linuxInstallation(packageManager):
         os.system('sudo snap install ffmpeg')
     elif packageManager == 2:
         try:
-            os.system('sudo dnf install ffmpeg-free.x86_64 -y')
+            os.system('sudo dnf install ffmpeg-free.x86_64 -y --allowerasing')
         except:
             os.system('clear')
-            os.system('sudo yum install ffmpeg-free.x86_64 -y')
+            os.system('sudo yum install ffmpeg-free.x86_64 -y --allowerasing')
     elif packageManager == 3:
-        os.system('sudo pacman -S ffmpeg')
+        os.system('sudo pacman -Syu ffmpeg')
 
     print('ffmpeg\'s installation completed! Enjoy!', end = '\n\n')
 
