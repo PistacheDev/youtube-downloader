@@ -1,12 +1,2 @@
 .vscode/
 __pycache__/
-certifi/__pycache__/
-charset_normalizer/__pycache__/
-idna/__pycache__/
-pytubefix/__pycache__/
-pytubefix/contrib/__pycache__/
-requests/__pycache__/
-urllib3/__pycache__/
-urllib3/contrib/__pycache__/
-urllib3/http2/__pycache__/
-urllib3/util/__pycache__/
