@@ -23,10 +23,10 @@ def checkInstallation(system):
             isInstalled = False
             packageManager = None
             cmdList = {
-                0: ['snap', 'list', 'ffmpeg'],
-                1: ['dpkg', '-s', 'ffmpeg'],
-                2: ['rpm', '-q', 'ffmpeg-free.x86_64'],
-                3: ['pacman', '-Q', 'ffmpeg']
+                0: ['dpkg', '-s', 'ffmpeg'],
+                1: ['rpm', '-q', 'ffmpeg-free.x86_64'],
+                2: ['pacman', '-Q', 'ffmpeg'],
+                3: ['snap', 'list', 'ffmpeg']
             }
 
             for i in range(len(cmdList)):
@@ -127,15 +127,15 @@ def linuxInstallation(packageManager):
     if packageManager == 0:
         os.system('sudo apt install ffmpeg -y')
     elif packageManager == 1:
-        os.system('sudo snap install ffmpeg')
-    elif packageManager == 2:
         try:
             os.system('sudo dnf install ffmpeg-free.x86_64 -y --allowerasing')
         except:
             os.system('clear')
             os.system('sudo yum install ffmpeg-free.x86_64 -y --allowerasing')
-    elif packageManager == 3:
+    elif packageManager == 2:
         os.system('sudo pacman -Syu ffmpeg')
+    elif packageManager == 3:
+        os.system('sudo snap install ffmpeg')
 
     print('ffmpeg\'s installation completed! Enjoy!', end = '\n\n')
 
