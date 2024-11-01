@@ -4,6 +4,9 @@ import os
 import requests
 import re
 
+scriptPath = os.path.abspath(__file__) # Path to this script.
+directoryPath = os.path.dirname(scriptPath) # Path to the directory.
+
 def videoDownload(youtubeVideo, system):
     print('Looking for available resolutions for your video..')
     availableResolutions = resolutions.displayResolutions(youtubeVideo)
@@ -23,7 +26,7 @@ def videoDownload(youtubeVideo, system):
         videoTitle = re.sub(r'[<>:"/\\|?*]', '', youtubeVideo.title) # Removing unvalid characters.
 
         videoToDownload.download(filename = f'{videoTitle}.mp4')
-        print(f'\n\nDownload finished: "{videoTitle}.mp4"')
+        print(f'\n\nDownload finished: "{directoryPath}/{videoTitle}.mp4"')
     else: # Resolutions without audio.
         videoToDownload = youtubeVideo.streams.filter(resolution = resolution, only_video = True).first()
         audioToDownload = youtubeVideo.streams.filter(only_audio = True).first()
@@ -46,7 +49,7 @@ def videoDownload(youtubeVideo, system):
         os.remove('videoSource.mp4')
         os.remove('audioSource.mp3')
 
-        print(f'\nDownload finished: "{videoTitle}.mp4"')
+        print(f'\nDownload finished: "{directoryPath}/{videoTitle}.mp4"')
 
 def audioDownload(youtubeVideo):
     audioToDownload = youtubeVideo.streams.filter(only_audio = True).first()
@@ -54,7 +57,7 @@ def audioDownload(youtubeVideo):
 
     audioTitle = re.sub(r'[<>:"/\\|?*]', '', youtubeVideo.title) # Removing unvalid characters.
     audioToDownload.download(filename = f'{audioTitle}.mp3')
-    print(f'\n\nDownload finished: "{audioTitle}.mp3"')
+    print(f'\n\nDownload finished: "{directoryPath}/{audioTitle}.mp3"')
 
 def pytubeDownloadProgress(stream, chunk, sizeRemaining):
     videoSize = stream.filesize
@@ -76,6 +79,6 @@ def thumbnailDownload(videoThumbnail, videoTitle):
 
         with open(f'{videoTitle}.png', 'wb') as file:
             file.write(request.content)
-            print(f'\nDownload finished: "{videoTitle}.png"')
+            print(f'\nDownload finished: "{directoryPath}/{videoTitle}.png"')
     else:
         print(f'\nRequest failed with code {request.status_code}.')
