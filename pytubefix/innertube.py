@@ -12,8 +12,8 @@ import time
 from typing import Tuple
 from urllib import parse
 
-# Local imports
 from pytubefix import request
+from pytubefix.helpers import reset_cache
 
 # YouTube on TV client secrets
 _client_id = '861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com'
@@ -389,6 +389,25 @@ _default_clients = {
         'require_po_token': False
     },
 
+    'TV': {
+        'innertube_context': {
+            'context': {
+                'client': {
+                    'clientName': 'TVHTML5',
+                    'clientVersion': '7.20240813.07.00',
+                    'platform': 'TV'
+                }
+            }
+        },
+        'header': {
+            'User-Agent': 'Mozilla/5.0',
+            'X-Youtube-Client-Name': '7'
+        },
+        'api_key': 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8',
+        'require_js_player': True,
+        'require_po_token': False
+    },
+
     'TV_EMBED': {
         'innertube_context': {
             'context': {
@@ -509,6 +528,9 @@ class InnerTube:
 
         self.use_po_token = use_po_token
         self.po_token_verifier = po_token_verifier or _default_po_token_verifier
+
+        if not self.allow_cache:
+            reset_cache()
 
         # Try to load from file if specified
         self.token_file = token_file or _token_file

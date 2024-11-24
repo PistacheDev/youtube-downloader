@@ -53,6 +53,6 @@ try:
             break
 
         os.system('cls' if system == 'Windows' else 'clear')
-except:
-    print('\nThe program crashed!')
+except Exception as err:
+    print(f'\nThe program crashed!\nError: {err}', end = '\n\n')
     input('Press [Enter] to close the program..')
