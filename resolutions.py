@@ -7,7 +7,7 @@ def displayResolutions(youtubeVideo):
                 availableResolutions.append(video.resolution)
 
     availableResolutions = sorted(availableResolutions, key = lambda x: int(x[:-1])) # Display the resolutions in an ascending order.
-    showResolutions = ', '.join(availableResolutions)
+    showResolutions = ", ".join(availableResolutions)
 
-    print(f'\nAvailable resolutions: {showResolutions}')
+    print(f"\nAvailable resolutions: {showResolutions}")
     return availableResolutions
