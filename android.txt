@@ -3,7 +3,7 @@ For example, I used “Pydroid 3” to port the program to Android, which allows
 Installation link (Google Play Store): https://play.google.com/store/apps/details?id=ru.iiec.pydroid3&hl=fr&pli=1.
 
 You are free to choose your interpreter software.
-However, when you download a video at a resolution other than 360p, the process takes longer.
+However, when you download a video at a resolution other than 360p, the process may takes longer.
 This is because videos downloaded at resolutions other than 360p do not have sound, possibly due to YouTube limitations.
 To get a video with sound, the audio and video tracks are assembled using the “ffmpeg” tool, which can be quite demanding for a smartphone or tablet.
 
