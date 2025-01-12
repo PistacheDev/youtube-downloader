@@ -17,18 +17,23 @@ def checkInstallation(system): # Check if ffmpeg is installed.
                 androidInstallation()
         else:
             packageManager = None
+            installed = False
 
             # Supported linux package managers.
             cmd = {
                 0: ["dpkg", "-s", "ffmpeg"],
                 1: ["rpm", "-q", "ffmpeg-free.x86_64"],
-                2: ["pacman", "-Q", "ffmpeg"],
+                2: ["pacman", "-Qi", "ffmpeg"],
                 3: ["snap", "list", "ffmpeg"]
             }
 
             for i in range(len(cmd)):
                 fetchResult = linuxFetchPackage(cmd[i])
-                if fetchResult != False: packageManager = i; break
+                if fetchResult != False:
+                    packageManager = i;
+                    if fetchResult != "":
+                        installed = True
+                    break
 
             os.system("clear")
 
@@ -38,7 +43,7 @@ def checkInstallation(system): # Check if ffmpeg is installed.
                 print("The program doesn't support your package manager!")
                 input("Press [Enter] to close the program..")
                 sys.exit()
-            else:
+            elif not installed:
                 print("ffmpeg isn't installed!")
                 linuxInstallation(packageManager)
     elif system == "Darwin": # Alias MacOS.
@@ -59,7 +64,7 @@ def checkInstallation(system): # Check if ffmpeg is installed.
 def linuxFetchPackage(cmd):
     try:
         fetch = subprocess.run(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE) # Try to use the package manager.
-        if fetch.returncode == 0: return True # If the success is successfull.
+        if fetch.returncode == 0: return True
         return ""
     except: return False
 

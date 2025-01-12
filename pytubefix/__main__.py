@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 - 2024 Juan Bindez <juanbindez780@gmail.com>
+# Copyright (c) 2023 - 2025 Juan Bindez <juanbindez780@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -137,9 +137,9 @@ class YouTube:
         self.client = 'WEB' if use_po_token else client
 
         # oauth can only be used by the TV and TV_EMBED client.
-        self.client = 'TV' if use_oauth else client
+        self.client = 'TV' if use_oauth else self.client
 
-        self.fallback_clients = ['MWEB', 'IOS', 'TV', 'WEB']
+        self.fallback_clients = ['MWEB', 'IOS', 'TV']
 
         self._signature_timestamp: dict = {}
 
@@ -410,22 +410,42 @@ class YouTube:
         if self._vid_info:
             return self._vid_info
 
-        innertube = InnerTube(
-            client=self.client,
-            use_oauth=self.use_oauth,
-            allow_cache=self.allow_oauth_cache,
-            token_file=self.token_file,
-            oauth_verifier=self.oauth_verifier,
-            use_po_token=self.use_po_token,
-            po_token_verifier=self.po_token_verifier
-        )
-        if innertube.require_js_player:
-            innertube.innertube_context.update(self.signature_timestamp)
+        def call_innertube():
+            innertube = InnerTube(
+                client=self.client,
+                use_oauth=self.use_oauth,
+                allow_cache=self.allow_oauth_cache,
+                token_file=self.token_file,
+                oauth_verifier=self.oauth_verifier,
+                use_po_token=self.use_po_token,
+                po_token_verifier=self.po_token_verifier
+            )
+            if innertube.require_js_player:
+                innertube.innertube_context.update(self.signature_timestamp)
 
-        innertube_response = innertube.player(self.video_id)
-        if self.use_po_token:
-            self.po_token = innertube.access_po_token
+            response = innertube.player(self.video_id)
+
+            if self.use_po_token:
+                self.po_token = innertube.access_po_token
+            return response
+
+        innertube_response = call_innertube()
+        for client in self.fallback_clients:
+            # Some clients are unable to access certain types of videos
+            # If the video is unavailable for the current client, attempts will be made with fallback clients
+            playability_status = innertube_response['playabilityStatus']
+            if playability_status['status'] == 'UNPLAYABLE' and 'reason' in playability_status and playability_status['reason'] == 'This video is not available':
+                logger.warning(f"{self.client} client returned: This video is not available")
+                self.client = client
+                logger.warning(f"Switching to client: {client}")
+                innertube_response = call_innertube()
+            else:
+                break
+
         self._vid_info = innertube_response
+        if not self._vid_info:
+            raise pytubefix.exceptions.InnerTubeResponseError(self.video_id, self.client)
+
         return self._vid_info
 
     @vid_info.setter
