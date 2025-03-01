@@ -22,7 +22,7 @@ def checkInstallation(system): # Check if ffmpeg is installed.
             # Supported linux package managers.
             cmd = {
                 0: ["dpkg", "-s", "ffmpeg"],
-                1: ["rpm", "-q", "ffmpeg-free.x86_64"],
+                1: ["rpm", "-q", "ffmpeg"],
                 2: ["pacman", "-Qi", "ffmpeg"],
                 3: ["snap", "list", "ffmpeg"]
             }
@@ -110,11 +110,14 @@ def linuxInstallation(packageManager):
 
     if packageManager == 0: os.system("sudo apt install ffmpeg -y")
     elif packageManager == 1:
+        os.system("sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm")
+        os.system("sudo dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm")
+
         try:
-            os.system("sudo dnf install ffmpeg-free.x86_64 -y")
+            os.system("sudo dnf install ffmpeg -y")
         except: # If the dnf command failed, we're trying with yum.
             os.system("clear")
-            os.system("sudo yum install ffmpeg-free.x86_64 -y")
+            os.system("sudo yum install ffmpeg -y")
     elif packageManager == 2: os.system("sudo pacman -Syu ffmpeg")
     elif packageManager == 3: os.system("sudo snap install ffmpeg")
     print("ffmpeg's installation completed! Enjoy!", end = "\n\n")
